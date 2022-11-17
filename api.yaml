@@ -1,0 +1,393 @@
+openapi: 3.1.0
+info:
+  title: NeoWS
+  version: "1"
+  description: "NeoWs (Near Earth Object Web Service) is a RESTful web service for near earth Asteroid information. With NeoWs a user can: search for Asteroids based on their closest approach date to Earth, lookup a specific Asteroid with its NASA JPL small body id, as well as browse the overall data-set."
+  summary: NeoWs (Near Earth Object Web Service) is a RESTful web service for near earth Asteroid information
+  contact:
+    name: Alexandre Lamberty
+    url: "http://alexandrelamberty.com"
+    email: mail@alexandrelamberty.com
+  license:
+    name: MIT License
+    url: "https://opensource.org/licenses/MIT"
+servers:
+  - url: "https://api.nasa.gov/neo/rest/v1"
+paths:
+  /feed:
+    get:
+      summary: Feed
+      tags:
+        - feed
+      responses:
+        "200":
+          $ref: "#/components/responses/Feed"
+      operationId: get-feed
+      parameters:
+        - $ref: "#/components/parameters/start_date"
+        - $ref: "#/components/parameters/end_date"
+        - $ref: "#/components/parameters/api_key"
+        - $ref: "#/components/parameters/detailed"
+      description: Retrieve a list of Asteroids based on their closest approach date to Earth
+  /neo/browse:
+    get:
+      summary: Browse
+      tags:
+        - browse
+      responses:
+        "200":
+          $ref: "#/components/responses/Browse"
+      operationId: get-browse
+      description: Browse the overall Asteroid data-set
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/size"
+        - $ref: "#/components/parameters/api_key"
+        - $ref: "#/components/parameters/detailed"
+    parameters: []
+  "/neo/{asteroid_id}":
+    get:
+      summary: Lookup
+      tags:
+        - lookup
+      operationId: get-neo
+      description: Lookup a specific Asteroid based on its NASA JPL small body (SPK-ID) ID
+      responses:
+        "200":
+          $ref: "#/components/responses/Lookup"
+      parameters:
+        - $ref: "#/components/parameters/api_key"
+    parameters:
+      - $ref: "#/components/parameters/asteroid_id"
+components:
+  schemas:
+    CloseApproach:
+      title: Close Approach
+      type: object
+      properties:
+        close_approach_date:
+          type: string
+          example: "2015-Sep-07 07:32"
+        epoch_date_close_approach:
+          type: object
+          properties:
+            kilometers_per_second:
+              type: string
+              example: "1.1630843052"
+            kilometers_per_hour:
+              type: string
+              example: "2601.7032823612"
+            miles_per_hour:
+              type: string
+              example: "2601.7032823612"
+        miss_distance:
+          type: object
+          properties:
+            astronomical:
+              type: string
+              example: "0.4981690972"
+            lunar:
+              type: string
+              example: "193.7877788108"
+            kilometers:
+              type: string
+              example: "74525035.840942964"
+            miles:
+              type: string
+              example: "46307709.9545183432"
+        orbiting_body:
+          type: string
+          example: Earth
+      description: Close Approach
+    Neo:
+      title: Neo
+      type: object
+      description: Near Earth Object
+      properties:
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: "http://api.nasa.gov/neo/rest/v1/neo/2440012?api_key=DEMO_KEY"
+        id:
+          type: string
+          example: "2440012"
+        neo_reference_id:
+          type: string
+          example: "2440012"
+        name:
+          type: string
+          example: 440012 (2002 LE27)
+        name_limited:
+          type: string
+          example: Albert
+        designation:
+          type: string
+          example: 2010 PK9
+        nasa_jpl_url:
+          type: string
+          example: "http://ssd.jpl.nasa.gov/sbdb.cgi?sstr=2440012"
+          format: uri
+        absolute_magnitude_h:
+          type: number
+          example: 19.3
+        estimated_diameter:
+          type: object
+          properties:
+            kilometers:
+              type: object
+              properties:
+                estimated_diameter_min:
+                  type: number
+                  example: 0.1160259082
+                estimated_diameter_max:
+                  type: number
+                  example: 0.2594418179
+            meters:
+              type: object
+              properties:
+                estimated_diameter_min:
+                  type: number
+                  example: 116.0259082094
+                estimated_diameter_max:
+                  type: number
+                  example: 259.4418179074
+            miles:
+              type: object
+              properties:
+                estimated_diameter_min:
+                  type: number
+                  example: 0.0720951346
+                estimated_diameter_max:
+                  type: number
+                  example: 0.1612096218
+            feet:
+              type: object
+              properties:
+                estimated_diameter_min:
+                  type: number
+                  example: 380.6624406898
+                estimated_diameter_max:
+                  type: number
+                  example: 851.1870938635
+        is_potentially_hazardous_asteroid:
+          type: boolean
+        close_approach_data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CloseApproach"
+        orbital_data:
+          type: object
+          properties:
+            orbit_id:
+              type: string
+              example: "25"
+            orbit_determination_date:
+              type: string
+              example: "2021-04-15 04:05:04"
+              format: date-time
+            first_observation_date:
+              type: string
+              example: "2010-08-02"
+              format: date
+            last_observation_date:
+              type: string
+              example: "2019-08-04"
+              format: date
+            data_arc_in_days:
+              type: number
+              example: 3289
+            observations_used:
+              type: number
+              example: 102
+            orbit_uncertainty:
+              type: string
+              example: "0"
+            minimum_orbit_intersection:
+              type: string
+              example: ".0163799"
+            jupiter_tisserand_invariant:
+              type: string
+              example: "8.149"
+            epoch_osculation:
+              type: string
+              example: "2459600.5"
+            eccentricity:
+              type: string
+              example: "6758816295966181"
+            semi_major_axis:
+              type: string
+              example: ".6821117765074953"
+            inclination:
+              type: string
+              example: "12.59278240977363"
+            ascending_node_longitude:
+              type: string
+              example: "306.5359724024219"
+            orbital_period:
+              type: string
+              example: "205.7698534440069"
+            perihelion_distance:
+              type: string
+              example: ".2210849574345652"
+            perihelion_argument:
+              type: string
+              example: "195.6313961587518"
+            aphelion_distance:
+              type: string
+              example: "1.143138595580425"
+            perihelion_time:
+              type: string
+              example: "2459654.948176334939"
+            mean_anomaly:
+              type: string
+              example: "264.7414227472738"
+            mean_motion:
+              type: string
+              example: "1.74952741606516"
+            equinox:
+              type: string
+              example: J2000
+            orbit_class:
+              type: object
+              properties:
+                orbit_class:
+                  type: string
+                  example: ATE
+                orbit_class_description:
+                  type: string
+                  example: a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU
+                orbit_class_range:
+                  type: string
+                  example: a (semi-major axis) < 1.0 AU; q (perihelion) > 0.983 AU
+        is_sentry_object:
+          type: boolean
+  parameters:
+    api_key:
+      name: api_key
+      in: query
+      required: true
+      schema:
+        type: string
+        default: DEMO_KEY
+        format: string
+      description: "API key for expanded usage https://api.nasa.gov/#signUp"
+    start_date:
+      name: start_date
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+        example: "2015-09-07"
+      description: Starting date for asteroid search
+    end_date:
+      name: end_date
+      in: query
+      required: false
+      schema:
+        type: string
+        example: "2015-09-08"
+        format: date
+      description: "Ending date for asteroid search, 7 days after start_date"
+    page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: number
+        example: 1
+      description: Page number desired
+    size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: number
+        example: 20
+        default: 20
+      description: Number of retrieved object par page
+    detailed:
+      name: detailed
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+        example: true
+      description: Detailed orbital information
+    asteroid_id:
+      name: asteroid_id
+      in: path
+      required: true
+      schema:
+        type: number
+        example: 3542519
+      description: NASA JPL small body (SPK-ID) ID
+  responses:
+    Lookup:
+      description: Successfull lookup response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Neo"
+          examples: {}
+    Feed:
+      description: Successfull feed response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              links:
+                type: object
+                properties:
+                  prev:
+                    type: string
+                    example: "http://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-06&end_date=2015-09-07&detailed=false&api_key=DEMO_KEY"
+                  self:
+                    type: string
+                    example: "http://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&detailed=false&api_key=DEMO_KEY"
+                  next:
+                    type: string
+                    example: "http://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-08&end_date=2015-09-09&detailed=false&api_key=DEMO_KEY"
+              element_count:
+                type: string
+                example: "25"
+              near_earth_objects:
+                type: object
+                properties:
+                  "2022-11-16":
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Neo"
+    Browse:
+      description: Successfull browse response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              links:
+                type: object
+              page:
+                type: object
+                properties:
+                  size:
+                    type: number
+                  total_elements:
+                    type: number
+                  number:
+                    type: number
+              near_earth_objects:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Neo"
+tags:
+  - name: browse
+    description: Browse the overall Asteroid data-set
+  - name: feed
+    description: Retrieve a list of Asteroids based on their closest approach date to Earth
+  - name: lookup
+    description: Lookup a specific Asteroid based on its NASA JPL small body (SPK-ID) ID
