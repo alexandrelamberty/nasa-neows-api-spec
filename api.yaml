@@ -1,9 +1,8 @@
-openapi: 3.1.0
+openapi: 3.0.3
 info:
   title: NeoWS
   version: "1"
   description: "NeoWs (Near Earth Object Web Service) is a RESTful web service for near earth Asteroid information. With NeoWs a user can: search for Asteroids based on their closest approach date to Earth, lookup a specific Asteroid with its NASA JPL small body id, as well as browse the overall data-set."
-  summary: NeoWs (Near Earth Object Web Service) is a RESTful web service for near earth Asteroid information
   contact:
     name: Alexandre Lamberty
     url: "http://alexandrelamberty.com"
